@@ -58,7 +58,7 @@
           "pages_per_session": 4.53846154,
           "avg_session_duration": 129.61538462,
           "carts": 2,
-          "orders": 2,
+          "orders": 1,
           "telegram": 0,
           "instagram": 0,
           "calls": 0,
@@ -183,7 +183,7 @@
         "sessions": 68,
         "users": 19,
         "carts": 2,
-        "orders": 2,
+        "orders": 1,
         "telegram": 0,
         "instagram": 0,
         "calls": 0,
@@ -209,11 +209,11 @@
     "pages_per_session": 3.67992214,
     "avg_session_duration": 169.69174082,
     "carts": 400,
-    "orders": 87,
+    "orders": 92,
     "telegram": 0,
     "instagram": 0,
     "calls": 24,
     "messenger": 124,
-    "orders_revenue_rub": 1045500.0
+    "orders_revenue_rub": 1236500.0
   }
 }

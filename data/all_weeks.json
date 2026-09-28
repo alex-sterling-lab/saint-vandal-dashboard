@@ -236,7 +236,7 @@
         "pages_per_session": 2.2893617,
         "avg_session_duration": 80.31261398,
         "carts": 207,
-        "orders": 18,
+        "orders": 20,
         "telegram": 41,
         "instagram": 17,
         "calls": 11,
@@ -532,12 +532,12 @@
         "pages_per_session": 2.69854847,
         "avg_session_duration": 103.03421462,
         "carts": 128,
-        "orders": 15,
+        "orders": 18,
         "telegram": 39,
         "instagram": 18,
         "calls": 8,
         "messenger": 39,
-        "orders_revenue_rub": 216000.0
+        "orders_revenue_rub": 261000.0
       }
     }
   ],
@@ -858,12 +858,12 @@
         "pages_per_session": 2.74583717,
         "avg_session_duration": 107.21816765,
         "carts": 507,
-        "orders": 65,
+        "orders": 75,
         "telegram": 99,
         "instagram": 39,
         "calls": 25,
         "messenger": 158,
-        "orders_revenue_rub": 879000.0
+        "orders_revenue_rub": 956000.0
       }
     }
   ],
@@ -953,5 +953,5 @@
       "carts": 11
     }
   ],
-  "generated_at": "2026-09-28T11:47:45.727194"
+  "generated_at": "2026-09-28T14:07:59.290617"
 }
