@@ -116,13 +116,6 @@
     margin-bottom: 32px;
   }
   .chart-title { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 20px; }
-  .chart { display: flex; align-items: flex-end; gap: 32px; height: 180px; padding-left: 8px; }
-  .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; }
-  .bars { display: flex; align-items: flex-end; gap: 8px; height: 100%; width: 100%; justify-content: center; }
-  .bar { flex: 1; max-width: 40px; background: var(--accent); border-radius: 4px 4px 0 0; position: relative; min-height: 2px; transition: opacity .15s; }
-  .bar.forms { background: var(--green); }
-  .bar.clicks { background: var(--gold); }
-  .bar:hover { opacity: 0.8; }
   .line-chart { padding-left: 8px; }
   .line-chart svg { width: 100%; height: 220px; display: block; overflow: visible; }
   .line-chart .gridline { stroke: var(--line); stroke-width: 1; }
@@ -135,10 +128,16 @@
   .line-chart .dot.leads { fill: var(--yellow); }
   .line-chart .dot.deals { fill: var(--green); }
   .line-chart .dot:hover { r: 6; }
+  .line-chart .cost-bar { fill: var(--accent); opacity: .9; }
+  .line-chart .cost-bar:hover { opacity: 1; }
+  .line-chart .carts-area { fill: var(--green); opacity: .14; }
+  .line-chart .week-sep { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 4; opacity: .5; }
+  .line-chart .panel-label { font-family: 'Golos Text', sans-serif; font-size: 11px; fill: var(--muted); letter-spacing: .04em; }
+  .line-chart .line.carts { stroke: var(--green); }
+  .line-chart .dot.carts { fill: var(--green); }
+  .line-chart .value-label.carts { fill: var(--ink-2); font-size: 10px; }
   .line-chart .value-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--ink-2); text-anchor: middle; }
   .line-chart .x-label { font-family: 'Golos Text', sans-serif; font-size: 10px; fill: var(--muted); text-anchor: middle; }
-  .bar-value { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-2); white-space: nowrap; }
-  .bar-label { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.3; }
   .chart-legend { display: flex; gap: 16px; justify-content: center; margin-top: 16px; font-size: 12px; color: var(--muted); }
   .chart-legend .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
 
@@ -202,7 +201,6 @@
   table.data td.dim { color: var(--muted); }
   table.data td.na { color: #b8a58a; font-style: italic; font-family: 'Golos Text'; font-size: 11px; }
 
-  table.data input.manual-input {
     width: 50px;
     padding: 3px 6px;
     text-align: right;
@@ -215,25 +213,8 @@
     border-radius: 4px;
     transition: border-color .15s, box-shadow .15s;
   }
-  table.data input.manual-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
-  table.data input.manual-input::-webkit-outer-spin-button,
-  table.data input.manual-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  table.data input.manual-input.saving { border-color: var(--gold); }
-  table.data input.manual-input.saved { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-soft); }
-  table.data input.manual-input.failed { border-color: #c0392b; box-shadow: 0 0 0 2px rgba(192,57,43,.15); }
-  table.data th.manual { color: var(--accent); }
 
   /* Статус связи с общим хранилищем */
-  .sync-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 3px 10px; border-radius: 100px;
-    font-size: 11px; font-family: 'Golos Text', sans-serif; font-weight: 600;
-    background: var(--surface); border: 1px solid var(--line); color: var(--muted);
-  }
-  .sync-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
-  .sync-pill.online .dot { background: var(--green); }
-  .sync-pill.offline { color: #c0392b; border-color: #e5c3bd; }
-  .sync-pill.offline .dot { background: #c0392b; }
 
   .note-strip {
     background: var(--gold-soft);
@@ -262,7 +243,6 @@
 
   @media (max-width: 720px) {
     footer.meta .footer-grid { grid-template-columns: 1fr; }
-    .chart { gap: 12px; }
   }
   /* без курсива в заголовках — акцент цветом; горизонтальный скролл только внутри таблиц */
   html, body { overflow-x: clip; }
@@ -334,8 +314,7 @@
   .topbar { background: var(--night); border-bottom: 1px solid #2c2a22; backdrop-filter: none; }
   .topbar-inner { color: #a9a797; }
   .topbar-inner b { color: #fff; font-family: 'Russo One', sans-serif; font-weight: 400; letter-spacing: .02em; }
-  .pill, .sync-pill { background: var(--night-2); border-color: #3a372d; color: #d8d6c8; }
-  .sync-pill.offline { color: #ff9a80; border-color: #6b2a1c; }
+  .pill { background: var(--night-2); border-color: #3a372d; color: #d8d6c8; }
 
   /* hero — ночная трасса во всю ширину экрана */
   .hero {
@@ -363,7 +342,8 @@
   .lede { color: #c9c7b8; }
 
   .summary { border-top: none; gap: 14px; margin-top: 36px; padding-top: 0;
-    grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  @media (max-width: 1100px) { .summary { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   .stat {
     padding: 18px 18px 16px; position: relative;
     background: rgba(28,26,21,.92); border: 1px solid #34312a; border-radius: 6px;
@@ -384,7 +364,6 @@
   }
   .chart-card { border-radius: 6px; border: 1px solid var(--line); border-left: 4px solid var(--accent); box-shadow: none; }
   .chart-title { color: var(--ink-2); font-family: 'Russo One', sans-serif; font-weight: 400; letter-spacing: .06em; }
-  .bar { border-radius: 2px 2px 0 0; }
   .note-strip { background: var(--surface); border-left: 4px solid var(--accent); border-radius: 0 6px 6px 0; }
 
   /* таблицы периодов */
@@ -403,13 +382,9 @@
 
   table.data th { background: #0b0a08; color: #bdbaa9; border-bottom: none; }
   table.data th.grp { background: #2b3120; color: #dfe6c9; }
-  table.data th.manual { background: var(--accent); color: #fff; }
   table.data tr.total td { background: var(--accent-soft); border-bottom: 2px solid var(--accent); }
   table.data tr.camp:hover td { background: rgba(255,255,255,.03); }
   table.data tr.total td { color: var(--ink); }
-  table.data input.manual-input { background: var(--surface-2); color: var(--ink); }
-  table.data input.manual-input { border-color: var(--accent); border-width: 1.5px; }
-  table.data input.manual-input:focus { box-shadow: 0 0 0 3px rgba(244,76,0,.25); }
 
   .fold-bar button { background: var(--surface-2); color: var(--ink); border-color: var(--line); border-radius: 3px; }
   .fold-bar button:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
@@ -446,7 +421,6 @@
   .tab[aria-selected="true"] { color: #fff; border-bottom-color: var(--accent); }
   @media (prefers-reduced-motion: reduce) { .tab { transition: none; } }
   table.data td.left.name { white-space: normal; min-width: 220px; }
-  table.data input.manual-input.wide-input { width: 78px; }
 </style>
 </head>
 <body>
@@ -455,7 +429,6 @@
   <div class="wide topbar-inner">
     <div><b>saintvandal.ru</b> · Яндекс Директ</div>
     <div style="display:flex; align-items:center; gap:10px;">
-      <span class="sync-pill" id="sync"><span class="dot"></span>Оплаты: подключаюсь…</span>
       <span class="pill"><span class="dot"></span> Обновлено <span id="updated">—</span></span>
     </div>
   </div>
@@ -476,26 +449,12 @@
 </div>
 
 <section class="block">
-  <h2>Динамика по <em>неделям</em></h2>
-  <div class="section-sub">Расход, клики и корзины из Директа по неделям</div>
+  <h2>Динамика по <em>дням</em></h2>
+  <div class="section-sub">Расход Директа и корзины из рекламы по дням; пунктир — начало недели</div>
 
   <div class="chart-card">
-    <div class="chart-title">Расход, ₽ · Клики · Корзины</div>
-    <div class="chart" id="chart"></div>
-    <div class="chart-legend">
-      <span><span class="swatch" style="background: var(--accent)"></span>Расход, ₽</span>
-      <span><span class="swatch" style="background: var(--gold)"></span>Клики</span>
-      <span><span class="swatch" style="background: var(--green)"></span>Корзины из Директа</span>
-    </div>
-  </div>
-
-  <div class="chart-card">
-    <div class="chart-title">Корзины · Заказы (оформлены) из Директа</div>
-    <div class="line-chart" id="chartLeads"></div>
-    <div class="chart-legend">
-      <span><span class="swatch" style="background: var(--yellow)"></span>Добавления в корзину</span>
-      <span><span class="swatch" style="background: var(--blue)"></span>Заказы (оформлены на сайте)</span>
-    </div>
+    <div class="chart-title">Расход и корзины по дням</div>
+    <div class="line-chart" id="chart"></div>
   </div>
 </section>
 
@@ -509,14 +468,12 @@
   <div class="section-sub">Одна строка — одна неделя. Поведение и цели — из Метрики по последнему значимому переходу.</div>
 
   <div class="note-strip">
-    <b>Заказы — оформленные на сайте (Метрика); оплату Метрика не видит. Оплаченные — со слов клиента, колонка «Оплачено».</b>
+    <b>Заказы — оформленные на сайте (Метрика); оплату Метрика не видит.</b>
     <br><b>Корзины</b> — добавления в корзину, <b>Заказы</b> — оформленные заказы (цель «Ecommerce: покупка»),
     <b>Сумма заказов</b> — их стоимость. Стоимость корзины и заказа = расход ÷ число; ДРР = расход ÷ сумма заказов.
     <br><b>Атрибуция.</b> Метрика, последний значимый переход: заказ засчитывается Директу, только если последний
     значимый визит перед ним пришёл из рекламы. Поэтому число корзин здесь может отличаться от конверсий в кабинете
     Директа — там своя модель атрибуции. Суммы расхода — без НДС.
-    <br><b>Оплачено.</b> Колонки «Оплачено, шт» и «Оплачено, ₽» заполняете вы — в строке каждой недели и каждого месяца.
-    Число сохраняется сразу и видно всем, у кого есть ссылка; стоимость оплаченного заказа = расход ÷ оплаченные заказы.
   </div>
 
   <div class="fold-bar" data-for="weeks"><button type="button" data-open="1">Развернуть все</button><button type="button" data-open="0">Свернуть все</button></div>
@@ -533,7 +490,7 @@
 
 
 <script>
-const DATA = /*__DATA__*/ {"weeks": [{"week": ["2026-09-14", "2026-09-20"], "sources": {"yandex_direct": "Client-Login direktsaint", "metrika": "счётчик 66575005", "attribution": "Метрика, последний значимый переход (lastsign)"}, "platforms": [{"name": "Яндекс Директ", "campaigns": [{"campaign": "ТК одежда", "id": "714285586", "type": "TEXT_CAMPAIGN", "impressions": 81777, "clicks": 2644, "ctr_pct": 3.2331829242941166, "cost_rub": 5000.0, "cpc_rub": 1.89, "sessions": 2589, "users": 2286, "bounce_rate": 0.19775975280000002, "pages_per_session": 1.60563924, "avg_session_duration": 48.78447277, "carts": 31, "orders": 0, "telegram": 1, "instagram": 0, "calls": 0, "messenger": 1, "orders_revenue_rub": 0.0, "cost_per_cart_rub": 161.29, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "ТК картины+скульптуры", "id": "714316258", "type": "TEXT_CAMPAIGN", "impressions": 43245, "clicks": 554, "ctr_pct": 1.2810729564111458, "cost_rub": 4999.97, "cpc_rub": 9.03, "sessions": 482, "users": 457, "bounce_rate": 0.3360995851, "pages_per_session": 1.8526971, "avg_session_duration": 42.4813278, "carts": 17, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": 294.12, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "ЕПК все товары", "id": "714314884", "type": "TEXT_CAMPAIGN", "impressions": 41330, "clicks": 1001, "ctr_pct": 2.4219695136704575, "cost_rub": 4998.8, "cpc_rub": 4.99, "sessions": 981, "users": 911, "bounce_rate": 0.29867482160000003, "pages_per_session": 1.78491335, "avg_session_duration": 52.69215087, "carts": 21, "orders": 1, "telegram": 2, "instagram": 1, "calls": 0, "messenger": 2, "orders_revenue_rub": 7000.0, "cost_per_cart_rub": 238.04, "cost_per_order_rub": 4998.8, "drr_pct": 71.41, "roas": 1.4}], "total": {"campaign": "Итого", "type": "TOTAL", "impressions": 166352, "clicks": 4199, "cost_rub": 14998.77, "sessions": 4052, "users": 3654, "carts": 69, "orders": 1, "telegram": 3, "instagram": 1, "calls": 0, "messenger": 3, "orders_revenue_rub": 7000.0, "bounce_rate": 0.2386475814429911, "pages_per_session": 1.678430402495064, "avg_session_duration": 48.98075024792695, "ctr_pct": 2.5241656246994326, "cpc_rub": 3.57, "cost_per_cart_rub": 217.37, "cost_per_order_rub": 14998.77, "drr_pct": 214.27, "roas": 0.47}}, {"name": "Вне кабинета", "campaigns": [{"campaign": "Картины по горячим ключам - РСЯ", "id": "183045749", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 5, "users": 1, "bounce_rate": 0.0, "pages_per_session": 2.0, "avg_session_duration": 15.2, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Товарная кампания от Яндекса (фид)", "id": "217764989", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 5, "users": 2, "bounce_rate": 0.2, "pages_per_session": 5.8, "avg_session_duration": 605.2, "carts": 2, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Товарная кампания saintvandal.ru от 18.04.25", "id": "219799607", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 1, "users": 1, "bounce_rate": 0.0, "pages_per_session": 1.0, "avg_session_duration": 15.0, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}], "total": {"campaign": "Итого", "type": "TOTAL", "impressions": 0, "clicks": 0, "cost_rub": 0, "sessions": 11, "users": 4, "carts": 2, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0, "bounce_rate": 0.09090909090909091, "pages_per_session": 3.6363636363636362, "avg_session_duration": 283.3636363636364, "ctr_pct": null, "cpc_rub": null, "cost_per_cart_rub": 0.0, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, "note": "Кампании Директа, которые Метрика видит (визиты по давним кликам), но которых нет в отчёте кабинета direktsaint за период. Расхода по ним за период нет."}], "site_total": {"sessions": 6580, "users": 5522, "bounce_rate": 0.2250759878, "pages_per_session": 2.2893617, "avg_session_duration": 80.31261398, "carts": 207, "orders": 18, "telegram": 41, "instagram": 17, "calls": 11, "messenger": 41, "orders_revenue_rub": 265000.0}}, {"week": ["2026-09-21", "2026-09-27"], "sources": {"yandex_direct": "Client-Login direktsaint", "metrika": "счётчик 66575005", "attribution": "Метрика, последний значимый переход (lastsign)"}, "platforms": [{"name": "Яндекс Директ", "campaigns": [{"campaign": "ЕПК все товары", "id": "714314884", "type": "TEXT_CAMPAIGN", "impressions": 28246, "clicks": 644, "ctr_pct": 2.2799688451462155, "cost_rub": 6606.07, "cpc_rub": 10.26, "sessions": 701, "users": 619, "bounce_rate": 0.1883024251, "pages_per_session": 2.44650499, "avg_session_duration": 100.97574893, "carts": 14, "orders": 1, "telegram": 0, "instagram": 2, "calls": 1, "messenger": 0, "orders_revenue_rub": 17000.0, "cost_per_cart_rub": 471.86, "cost_per_order_rub": 6606.07, "drr_pct": 38.86, "roas": 2.57}, {"campaign": "ТК картины+скульптуры", "id": "714316258", "type": "TEXT_CAMPAIGN", "impressions": 12161, "clicks": 222, "ctr_pct": 1.8255077707425378, "cost_rub": 3627.9, "cpc_rub": 16.34, "sessions": 218, "users": 195, "bounce_rate": 0.2660550459, "pages_per_session": 2.02293578, "avg_session_duration": 68.64220183, "carts": 26, "orders": 0, "telegram": 1, "instagram": 0, "calls": 0, "messenger": 1, "orders_revenue_rub": 0.0, "cost_per_cart_rub": 139.53, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "ТК одежда", "id": "714285586", "type": "TEXT_CAMPAIGN", "impressions": 32845, "clicks": 794, "ctr_pct": 2.417415131679099, "cost_rub": 2262.43, "cpc_rub": 2.85, "sessions": 818, "users": 760, "bounce_rate": 0.2261613692, "pages_per_session": 1.81295844, "avg_session_duration": 50.23349633, "carts": 13, "orders": 0, "telegram": 2, "instagram": 0, "calls": 0, "messenger": 2, "orders_revenue_rub": 0.0, "cost_per_cart_rub": 174.03, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "ТК общая. за конв.", "id": "714662639", "type": "TEXT_CAMPAIGN", "impressions": 9604, "clicks": 181, "ctr_pct": 1.884631403581841, "cost_rub": 0.0, "cpc_rub": 0.0, "sessions": 177, "users": 169, "bounce_rate": 0.19774011300000002, "pages_per_session": 1.52542373, "avg_session_duration": 41.88135593, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "МК общая. За конв", "id": "714665052", "type": "TEXT_CAMPAIGN", "impressions": 250, "clicks": 4, "ctr_pct": 1.6, "cost_rub": 0.0, "cpc_rub": 0.0, "sessions": 3, "users": 3, "bounce_rate": 0.0, "pages_per_session": 3.33333333, "avg_session_duration": 190.66666667, "carts": 0, "orders": 0, "telegram": 2, "instagram": 0, "calls": 0, "messenger": 2, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}], "total": {"campaign": "Итого", "type": "TOTAL", "impressions": 83106, "clicks": 1845, "cost_rub": 12496.4, "sessions": 1917, "users": 1746, "carts": 53, "orders": 1, "telegram": 5, "instagram": 2, "calls": 1, "messenger": 5, "orders_revenue_rub": 17000.0, "bounce_rate": 0.21387584768278559, "pages_per_session": 2.0443401158841943, "avg_session_duration": 70.33072508942618, "ctr_pct": 2.220056313623565, "cpc_rub": 6.77, "cost_per_cart_rub": 235.78, "cost_per_order_rub": 12496.4, "drr_pct": 73.51, "roas": 1.36}}, {"name": "Вне кабинета", "campaigns": [{"campaign": "Картины по горячим ключам - РСЯ", "id": "183045749", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 4, "users": 1, "bounce_rate": 0.0, "pages_per_session": 2.5, "avg_session_duration": 325.75, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Товарная кампания saintvandal.ru от 18.04.25", "id": "219799607", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 3, "users": 1, "bounce_rate": 0.0, "pages_per_session": 2.0, "avg_session_duration": 33.66666667, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Проба декабрь", "id": "705410748", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 2, "users": 1, "bounce_rate": 0.0, "pages_per_session": 4.5, "avg_session_duration": 394.5, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}], "total": {"campaign": "Итого", "type": "TOTAL", "impressions": 0, "clicks": 0, "cost_rub": 0, "sessions": 9, "users": 3, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0, "bounce_rate": 0.0, "pages_per_session": 2.7777777777777777, "avg_session_duration": 243.66666666777778, "ctr_pct": null, "cpc_rub": null, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, "note": "Кампании Директа, которые Метрика видит (визиты по давним кликам), но которых нет в отчёте кабинета direktsaint за период. Расхода по ним за период нет."}], "site_total": {"sessions": 3858, "users": 3174, "bounce_rate": 0.2042509072, "pages_per_session": 2.69854847, "avg_session_duration": 103.03421462, "carts": 128, "orders": 15, "telegram": 39, "instagram": 18, "calls": 8, "messenger": 39, "orders_revenue_rub": 216000.0}}], "months": [{"month": "2026-09", "period": ["2026-09-01", "2026-09-27"], "partial": true, "sources": {"yandex_direct": "Client-Login direktsaint", "metrika": "счётчик 66575005", "attribution": "Метрика, последний значимый переход (lastsign)"}, "platforms": [{"name": "Яндекс Директ", "campaigns": [{"campaign": "ЕПК все товары", "id": "714314884", "type": "TEXT_CAMPAIGN", "impressions": 69576, "clicks": 1645, "ctr_pct": 2.364321030240313, "cost_rub": 11604.88, "cpc_rub": 7.05, "sessions": 1682, "users": 1514, "bounce_rate": 0.25267538640000003, "pages_per_session": 2.06064209, "avg_session_duration": 72.81510107, "carts": 35, "orders": 2, "telegram": 2, "instagram": 3, "calls": 1, "messenger": 2, "orders_revenue_rub": 24000.0, "cost_per_cart_rub": 331.57, "cost_per_order_rub": 5802.44, "drr_pct": 48.35, "roas": 2.07}, {"campaign": "ТК картины+скульптуры", "id": "714316258", "type": "TEXT_CAMPAIGN", "impressions": 55406, "clicks": 776, "ctr_pct": 1.4005703353427426, "cost_rub": 8627.87, "cpc_rub": 11.12, "sessions": 700, "users": 648, "bounce_rate": 0.3142857143, "pages_per_session": 1.90571429, "avg_session_duration": 50.62857143, "carts": 43, "orders": 0, "telegram": 1, "instagram": 0, "calls": 0, "messenger": 1, "orders_revenue_rub": 0.0, "cost_per_cart_rub": 200.65, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "ТК одежда", "id": "714285586", "type": "TEXT_CAMPAIGN", "impressions": 114622, "clicks": 3438, "ctr_pct": 2.999424194308248, "cost_rub": 7262.43, "cpc_rub": 2.11, "sessions": 3407, "users": 2997, "bounce_rate": 0.2045788083, "pages_per_session": 1.65541532, "avg_session_duration": 49.13237452, "carts": 44, "orders": 0, "telegram": 3, "instagram": 0, "calls": 0, "messenger": 3, "orders_revenue_rub": 0.0, "cost_per_cart_rub": 165.06, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "ТК общая. за конв.", "id": "714662639", "type": "TEXT_CAMPAIGN", "impressions": 9604, "clicks": 181, "ctr_pct": 1.884631403581841, "cost_rub": 0.0, "cpc_rub": 0.0, "sessions": 177, "users": 169, "bounce_rate": 0.19774011300000002, "pages_per_session": 1.52542373, "avg_session_duration": 41.88135593, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "МК общая. За конв", "id": "714665052", "type": "TEXT_CAMPAIGN", "impressions": 250, "clicks": 4, "ctr_pct": 1.6, "cost_rub": 0.0, "cpc_rub": 0.0, "sessions": 3, "users": 3, "bounce_rate": 0.0, "pages_per_session": 3.33333333, "avg_session_duration": 190.66666667, "carts": 0, "orders": 0, "telegram": 2, "instagram": 0, "calls": 0, "messenger": 2, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}], "total": {"campaign": "Итого", "type": "TOTAL", "impressions": 249458, "clicks": 6044, "cost_rub": 27495.18, "sessions": 5969, "users": 5331, "carts": 122, "orders": 2, "telegram": 8, "instagram": 3, "calls": 1, "messenger": 8, "orders_revenue_rub": 24000.0, "bounce_rate": 0.2306919081611493, "pages_per_session": 1.7959457185156642, "avg_session_duration": 55.8374937158653, "ctr_pct": 2.4228527447506196, "cpc_rub": 4.55, "cost_per_cart_rub": 225.37, "cost_per_order_rub": 13747.59, "drr_pct": 114.56, "roas": 0.87}}, {"name": "Вне кабинета", "campaigns": [{"campaign": "Картины по горячим ключам - РСЯ", "id": "183045749", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 20, "users": 1, "bounce_rate": 0.0, "pages_per_session": 2.1, "avg_session_duration": 77.65, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Товарная кампания от Яндекса (фид)", "id": "217764989", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 8, "users": 4, "bounce_rate": 0.125, "pages_per_session": 4.875, "avg_session_duration": 390.5, "carts": 2, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Товарная кампания saintvandal.ru от 18.04.25", "id": "219799607", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 5, "users": 2, "bounce_rate": 0.0, "pages_per_session": 1.6, "avg_session_duration": 26.4, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Проба декабрь", "id": "705410748", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 2, "users": 1, "bounce_rate": 0.0, "pages_per_session": 4.5, "avg_session_duration": 394.5, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}], "total": {"campaign": "Итого", "type": "TOTAL", "impressions": 0, "clicks": 0, "cost_rub": 0, "sessions": 35, "users": 8, "carts": 2, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0, "bounce_rate": 0.02857142857142857, "pages_per_session": 2.8, "avg_session_duration": 159.94285714285715, "ctr_pct": null, "cpc_rub": null, "cost_per_cart_rub": 0.0, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, "note": "Кампании Директа, которые Метрика видит (визиты по давним кликам), но которых нет в отчёте кабинета direktsaint за период. Расхода по ним за период нет."}], "site_total": {"sessions": 14113, "users": 10996, "bounce_rate": 0.2083894282, "pages_per_session": 2.74583717, "avg_session_duration": 107.21816765, "carts": 507, "orders": 65, "telegram": 99, "instagram": 39, "calls": 25, "messenger": 158, "orders_revenue_rub": 879000.0}}], "generated_at": "2026-09-28T11:38:27.675991"};
+const DATA = /*__DATA__*/ {"weeks": [{"week": ["2026-09-14", "2026-09-20"], "sources": {"yandex_direct": "Client-Login direktsaint", "metrika": "счётчик 66575005", "attribution": "Метрика, последний значимый переход (lastsign)"}, "platforms": [{"name": "Яндекс Директ", "campaigns": [{"campaign": "ТК одежда", "id": "714285586", "type": "TEXT_CAMPAIGN", "impressions": 81777, "clicks": 2644, "ctr_pct": 3.2331829242941166, "cost_rub": 5000.0, "cpc_rub": 1.89, "sessions": 2589, "users": 2286, "bounce_rate": 0.19775975280000002, "pages_per_session": 1.60563924, "avg_session_duration": 48.78447277, "carts": 31, "orders": 0, "telegram": 1, "instagram": 0, "calls": 0, "messenger": 1, "orders_revenue_rub": 0.0, "cost_per_cart_rub": 161.29, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "ТК картины+скульптуры", "id": "714316258", "type": "TEXT_CAMPAIGN", "impressions": 43245, "clicks": 554, "ctr_pct": 1.2810729564111458, "cost_rub": 4999.97, "cpc_rub": 9.03, "sessions": 482, "users": 457, "bounce_rate": 0.3360995851, "pages_per_session": 1.8526971, "avg_session_duration": 42.4813278, "carts": 17, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": 294.12, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "ЕПК все товары", "id": "714314884", "type": "TEXT_CAMPAIGN", "impressions": 41330, "clicks": 1001, "ctr_pct": 2.4219695136704575, "cost_rub": 4998.8, "cpc_rub": 4.99, "sessions": 981, "users": 911, "bounce_rate": 0.29867482160000003, "pages_per_session": 1.78491335, "avg_session_duration": 52.69215087, "carts": 21, "orders": 1, "telegram": 2, "instagram": 1, "calls": 0, "messenger": 2, "orders_revenue_rub": 7000.0, "cost_per_cart_rub": 238.04, "cost_per_order_rub": 4998.8, "drr_pct": 71.41, "roas": 1.4}], "total": {"campaign": "Итого", "type": "TOTAL", "impressions": 166352, "clicks": 4199, "cost_rub": 14998.77, "sessions": 4052, "users": 3654, "carts": 69, "orders": 1, "telegram": 3, "instagram": 1, "calls": 0, "messenger": 3, "orders_revenue_rub": 7000.0, "bounce_rate": 0.2386475814429911, "pages_per_session": 1.678430402495064, "avg_session_duration": 48.98075024792695, "ctr_pct": 2.5241656246994326, "cpc_rub": 3.57, "cost_per_cart_rub": 217.37, "cost_per_order_rub": 14998.77, "drr_pct": 214.27, "roas": 0.47}}, {"name": "Вне кабинета", "campaigns": [{"campaign": "Картины по горячим ключам - РСЯ", "id": "183045749", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 5, "users": 1, "bounce_rate": 0.0, "pages_per_session": 2.0, "avg_session_duration": 15.2, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Товарная кампания от Яндекса (фид)", "id": "217764989", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 5, "users": 2, "bounce_rate": 0.2, "pages_per_session": 5.8, "avg_session_duration": 605.2, "carts": 2, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Товарная кампания saintvandal.ru от 18.04.25", "id": "219799607", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 1, "users": 1, "bounce_rate": 0.0, "pages_per_session": 1.0, "avg_session_duration": 15.0, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}], "total": {"campaign": "Итого", "type": "TOTAL", "impressions": 0, "clicks": 0, "cost_rub": 0, "sessions": 11, "users": 4, "carts": 2, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0, "bounce_rate": 0.09090909090909091, "pages_per_session": 3.6363636363636362, "avg_session_duration": 283.3636363636364, "ctr_pct": null, "cpc_rub": null, "cost_per_cart_rub": 0.0, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, "note": "Кампании Директа, которые Метрика видит (визиты по давним кликам), но которых нет в отчёте кабинета direktsaint за период. Расхода по ним за период нет."}], "site_total": {"sessions": 6580, "users": 5522, "bounce_rate": 0.2250759878, "pages_per_session": 2.2893617, "avg_session_duration": 80.31261398, "carts": 207, "orders": 18, "telegram": 41, "instagram": 17, "calls": 11, "messenger": 41, "orders_revenue_rub": 265000.0}}, {"week": ["2026-09-21", "2026-09-27"], "sources": {"yandex_direct": "Client-Login direktsaint", "metrika": "счётчик 66575005", "attribution": "Метрика, последний значимый переход (lastsign)"}, "platforms": [{"name": "Яндекс Директ", "campaigns": [{"campaign": "ЕПК все товары", "id": "714314884", "type": "TEXT_CAMPAIGN", "impressions": 28246, "clicks": 644, "ctr_pct": 2.2799688451462155, "cost_rub": 6606.07, "cpc_rub": 10.26, "sessions": 701, "users": 619, "bounce_rate": 0.1883024251, "pages_per_session": 2.44650499, "avg_session_duration": 100.97574893, "carts": 14, "orders": 1, "telegram": 0, "instagram": 2, "calls": 1, "messenger": 0, "orders_revenue_rub": 17000.0, "cost_per_cart_rub": 471.86, "cost_per_order_rub": 6606.07, "drr_pct": 38.86, "roas": 2.57}, {"campaign": "ТК картины+скульптуры", "id": "714316258", "type": "TEXT_CAMPAIGN", "impressions": 12161, "clicks": 222, "ctr_pct": 1.8255077707425378, "cost_rub": 3627.9, "cpc_rub": 16.34, "sessions": 218, "users": 195, "bounce_rate": 0.2660550459, "pages_per_session": 2.02293578, "avg_session_duration": 68.64220183, "carts": 26, "orders": 0, "telegram": 1, "instagram": 0, "calls": 0, "messenger": 1, "orders_revenue_rub": 0.0, "cost_per_cart_rub": 139.53, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "ТК одежда", "id": "714285586", "type": "TEXT_CAMPAIGN", "impressions": 32845, "clicks": 794, "ctr_pct": 2.417415131679099, "cost_rub": 2262.43, "cpc_rub": 2.85, "sessions": 818, "users": 760, "bounce_rate": 0.2261613692, "pages_per_session": 1.81295844, "avg_session_duration": 50.23349633, "carts": 13, "orders": 0, "telegram": 2, "instagram": 0, "calls": 0, "messenger": 2, "orders_revenue_rub": 0.0, "cost_per_cart_rub": 174.03, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "ТК общая. за конв.", "id": "714662639", "type": "TEXT_CAMPAIGN", "impressions": 9604, "clicks": 181, "ctr_pct": 1.884631403581841, "cost_rub": 0.0, "cpc_rub": 0.0, "sessions": 177, "users": 169, "bounce_rate": 0.19774011300000002, "pages_per_session": 1.52542373, "avg_session_duration": 41.88135593, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "МК общая. За конв", "id": "714665052", "type": "TEXT_CAMPAIGN", "impressions": 250, "clicks": 4, "ctr_pct": 1.6, "cost_rub": 0.0, "cpc_rub": 0.0, "sessions": 3, "users": 3, "bounce_rate": 0.0, "pages_per_session": 3.33333333, "avg_session_duration": 190.66666667, "carts": 0, "orders": 0, "telegram": 2, "instagram": 0, "calls": 0, "messenger": 2, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}], "total": {"campaign": "Итого", "type": "TOTAL", "impressions": 83106, "clicks": 1845, "cost_rub": 12496.4, "sessions": 1917, "users": 1746, "carts": 53, "orders": 1, "telegram": 5, "instagram": 2, "calls": 1, "messenger": 5, "orders_revenue_rub": 17000.0, "bounce_rate": 0.21387584768278559, "pages_per_session": 2.0443401158841943, "avg_session_duration": 70.33072508942618, "ctr_pct": 2.220056313623565, "cpc_rub": 6.77, "cost_per_cart_rub": 235.78, "cost_per_order_rub": 12496.4, "drr_pct": 73.51, "roas": 1.36}}, {"name": "Вне кабинета", "campaigns": [{"campaign": "Картины по горячим ключам - РСЯ", "id": "183045749", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 4, "users": 1, "bounce_rate": 0.0, "pages_per_session": 2.5, "avg_session_duration": 325.75, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Товарная кампания saintvandal.ru от 18.04.25", "id": "219799607", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 3, "users": 1, "bounce_rate": 0.0, "pages_per_session": 2.0, "avg_session_duration": 33.66666667, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Проба декабрь", "id": "705410748", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 2, "users": 1, "bounce_rate": 0.0, "pages_per_session": 4.5, "avg_session_duration": 394.5, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}], "total": {"campaign": "Итого", "type": "TOTAL", "impressions": 0, "clicks": 0, "cost_rub": 0, "sessions": 9, "users": 3, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0, "bounce_rate": 0.0, "pages_per_session": 2.7777777777777777, "avg_session_duration": 243.66666666777778, "ctr_pct": null, "cpc_rub": null, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, "note": "Кампании Директа, которые Метрика видит (визиты по давним кликам), но которых нет в отчёте кабинета direktsaint за период. Расхода по ним за период нет."}], "site_total": {"sessions": 3858, "users": 3174, "bounce_rate": 0.2042509072, "pages_per_session": 2.69854847, "avg_session_duration": 103.03421462, "carts": 128, "orders": 15, "telegram": 39, "instagram": 18, "calls": 8, "messenger": 39, "orders_revenue_rub": 216000.0}}], "months": [{"month": "2026-09", "period": ["2026-09-01", "2026-09-27"], "partial": true, "sources": {"yandex_direct": "Client-Login direktsaint", "metrika": "счётчик 66575005", "attribution": "Метрика, последний значимый переход (lastsign)"}, "platforms": [{"name": "Яндекс Директ", "campaigns": [{"campaign": "ЕПК все товары", "id": "714314884", "type": "TEXT_CAMPAIGN", "impressions": 69576, "clicks": 1645, "ctr_pct": 2.364321030240313, "cost_rub": 11604.88, "cpc_rub": 7.05, "sessions": 1682, "users": 1514, "bounce_rate": 0.25267538640000003, "pages_per_session": 2.06064209, "avg_session_duration": 72.81510107, "carts": 35, "orders": 2, "telegram": 2, "instagram": 3, "calls": 1, "messenger": 2, "orders_revenue_rub": 24000.0, "cost_per_cart_rub": 331.57, "cost_per_order_rub": 5802.44, "drr_pct": 48.35, "roas": 2.07}, {"campaign": "ТК картины+скульптуры", "id": "714316258", "type": "TEXT_CAMPAIGN", "impressions": 55406, "clicks": 776, "ctr_pct": 1.4005703353427426, "cost_rub": 8627.87, "cpc_rub": 11.12, "sessions": 700, "users": 648, "bounce_rate": 0.3142857143, "pages_per_session": 1.90571429, "avg_session_duration": 50.62857143, "carts": 43, "orders": 0, "telegram": 1, "instagram": 0, "calls": 0, "messenger": 1, "orders_revenue_rub": 0.0, "cost_per_cart_rub": 200.65, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "ТК одежда", "id": "714285586", "type": "TEXT_CAMPAIGN", "impressions": 114622, "clicks": 3438, "ctr_pct": 2.999424194308248, "cost_rub": 7262.43, "cpc_rub": 2.11, "sessions": 3407, "users": 2997, "bounce_rate": 0.2045788083, "pages_per_session": 1.65541532, "avg_session_duration": 49.13237452, "carts": 44, "orders": 0, "telegram": 3, "instagram": 0, "calls": 0, "messenger": 3, "orders_revenue_rub": 0.0, "cost_per_cart_rub": 165.06, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "ТК общая. за конв.", "id": "714662639", "type": "TEXT_CAMPAIGN", "impressions": 9604, "clicks": 181, "ctr_pct": 1.884631403581841, "cost_rub": 0.0, "cpc_rub": 0.0, "sessions": 177, "users": 169, "bounce_rate": 0.19774011300000002, "pages_per_session": 1.52542373, "avg_session_duration": 41.88135593, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "МК общая. За конв", "id": "714665052", "type": "TEXT_CAMPAIGN", "impressions": 250, "clicks": 4, "ctr_pct": 1.6, "cost_rub": 0.0, "cpc_rub": 0.0, "sessions": 3, "users": 3, "bounce_rate": 0.0, "pages_per_session": 3.33333333, "avg_session_duration": 190.66666667, "carts": 0, "orders": 0, "telegram": 2, "instagram": 0, "calls": 0, "messenger": 2, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}], "total": {"campaign": "Итого", "type": "TOTAL", "impressions": 249458, "clicks": 6044, "cost_rub": 27495.18, "sessions": 5969, "users": 5331, "carts": 122, "orders": 2, "telegram": 8, "instagram": 3, "calls": 1, "messenger": 8, "orders_revenue_rub": 24000.0, "bounce_rate": 0.2306919081611493, "pages_per_session": 1.7959457185156642, "avg_session_duration": 55.8374937158653, "ctr_pct": 2.4228527447506196, "cpc_rub": 4.55, "cost_per_cart_rub": 225.37, "cost_per_order_rub": 13747.59, "drr_pct": 114.56, "roas": 0.87}}, {"name": "Вне кабинета", "campaigns": [{"campaign": "Картины по горячим ключам - РСЯ", "id": "183045749", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 20, "users": 1, "bounce_rate": 0.0, "pages_per_session": 2.1, "avg_session_duration": 77.65, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Товарная кампания от Яндекса (фид)", "id": "217764989", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 8, "users": 4, "bounce_rate": 0.125, "pages_per_session": 4.875, "avg_session_duration": 390.5, "carts": 2, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Товарная кампания saintvandal.ru от 18.04.25", "id": "219799607", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 5, "users": 2, "bounce_rate": 0.0, "pages_per_session": 1.6, "avg_session_duration": 26.4, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, {"campaign": "Проба декабрь", "id": "705410748", "type": "OUTSIDE", "impressions": null, "clicks": null, "ctr_pct": null, "cost_rub": null, "cpc_rub": null, "sessions": 2, "users": 1, "bounce_rate": 0.0, "pages_per_session": 4.5, "avg_session_duration": 394.5, "carts": 0, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0.0, "cost_per_cart_rub": null, "cost_per_order_rub": null, "drr_pct": null, "roas": null}], "total": {"campaign": "Итого", "type": "TOTAL", "impressions": 0, "clicks": 0, "cost_rub": 0, "sessions": 35, "users": 8, "carts": 2, "orders": 0, "telegram": 0, "instagram": 0, "calls": 0, "messenger": 0, "orders_revenue_rub": 0, "bounce_rate": 0.02857142857142857, "pages_per_session": 2.8, "avg_session_duration": 159.94285714285715, "ctr_pct": null, "cpc_rub": null, "cost_per_cart_rub": 0.0, "cost_per_order_rub": null, "drr_pct": null, "roas": null}, "note": "Кампании Директа, которые Метрика видит (визиты по давним кликам), но которых нет в отчёте кабинета direktsaint за период. Расхода по ним за период нет."}], "site_total": {"sessions": 14113, "users": 10996, "bounce_rate": 0.2083894282, "pages_per_session": 2.74583717, "avg_session_duration": 107.21816765, "carts": 507, "orders": 65, "telegram": 99, "instagram": 39, "calls": 25, "messenger": 158, "orders_revenue_rub": 879000.0}}], "daily": [{"date": "2026-09-14", "cost_rub": 315.79, "clicks": 37, "carts": 0}, {"date": "2026-09-15", "cost_rub": 3308.97, "clicks": 444, "carts": 2}, {"date": "2026-09-16", "cost_rub": 3362.99, "clicks": 801, "carts": 17}, {"date": "2026-09-17", "cost_rub": 2831.32, "clicks": 889, "carts": 16}, {"date": "2026-09-18", "cost_rub": 1690.0, "clicks": 873, "carts": 9}, {"date": "2026-09-19", "cost_rub": 1964.75, "clicks": 640, "carts": 8}, {"date": "2026-09-20", "cost_rub": 1524.93, "clicks": 515, "carts": 17}, {"date": "2026-09-21", "cost_rub": 1304.1, "clicks": 577, "carts": 6}, {"date": "2026-09-22", "cost_rub": 1070.72, "clicks": 533, "carts": 4}, {"date": "2026-09-23", "cost_rub": 1863.37, "clicks": 269, "carts": 8}, {"date": "2026-09-24", "cost_rub": 2384.44, "clicks": 155, "carts": 4}, {"date": "2026-09-25", "cost_rub": 2503.01, "clicks": 159, "carts": 16}, {"date": "2026-09-26", "cost_rub": 1755.52, "clicks": 82, "carts": 4}, {"date": "2026-09-27", "cost_rub": 1615.25, "clicks": 70, "carts": 11}], "generated_at": "2026-09-28T11:47:45.727194"};
 
 function na() { return '<span class="na">н/д</span>'; }
 function fmtInt(v) { if (v == null || v === '') return na(); return Math.round(v).toLocaleString('ru-RU'); }
@@ -590,64 +547,56 @@ function renderSummary(weeks) {
     <div class="stat key">
       <div class="stat-label">Сумма заказов</div>
       <div class="stat-value">${fmtRub(t.revenue)} ₽</div>
-      <div class="stat-sub">ДРР ${t.revenue ? fmtDec(t.cost / t.revenue * 100, 1) + '%' : '—'} · оформлено, не оплачено</div>
-    </div>
-    <div class="stat key">
-      <div class="stat-label">Оплачено (со слов клиента)</div>
-      <div class="stat-value" id="paidTotal">—</div>
-      <div class="stat-sub" id="paidSub">вписывается вручную в таблицах ниже</div>
+      <div class="stat-sub">ДРР ${t.revenue ? fmtDec(t.cost / t.revenue * 100, 1) + '%' : '—'} · по оформленным заказам</div>
     </div>
   `;
 }
 
-function renderChart(weeks) {
-  const rows = weeks.map(w => { const d = direct(w); return { w, cost: d.cost_rub || 0, clicks: d.clicks || 0, c: d.carts || 0 }; });
-  const maxCost = Math.max(1, ...rows.map(r => r.cost));
-  const maxClicks = Math.max(1, ...rows.map(r => r.clicks));
-  const maxC = Math.max(1, ...rows.map(r => r.c));
-  document.getElementById('chart').innerHTML = rows.map(r => `
-      <div class="bar-group">
-        <div class="bars">
-          <div class="bar" style="height:${r.cost / maxCost * 100}%"><div class="bar-value">${fmtShort(r.cost)}</div></div>
-          <div class="bar clicks" style="height:${r.clicks / maxClicks * 100}%"><div class="bar-value">${fmtShort(r.clicks)}</div></div>
-          <div class="bar forms" style="height:${r.c / maxC * 100}%"><div class="bar-value">${r.c}</div></div>
-        </div>
-        <div class="bar-label">${fmtDate(r.w.week[0])} –<br>${fmtDate(r.w.week[1])}</div>
-      </div>`).join('');
-}
-
-function renderLeadsChart(weeks) {
-  const el = document.getElementById('chartLeads');
-  const rows = weeks.map(w => {
-    const d = direct(w);
-    return { week: w.week, forms: d.orders || 0, leads: d.carts || 0 };
-  });
+function renderChart() {
+  // Два ряда на общей оси дней: сверху расход (столбики), снизу корзины (линия) — у каждого своя шкала
+  const el = document.getElementById('chart');
+  const rows = DATA.daily || [];
   const n = rows.length;
-  const W = el.clientWidth || 900, H = 220;
-  const padX = 24, padTop = 26, padBottom = 26;
-  const plotW = W - padX * 2, plotH = H - padTop - padBottom;
-  const x = i => n > 1 ? padX + (plotW * i) / (n - 1) : padX + plotW / 2;
-  // Общая шкала: все три ряда — штуки, их сравнивают между собой
-  const max = Math.max(1, ...rows.map(r => Math.max(r.forms, r.leads)));
-  const y = v => padTop + plotH - (v / max) * plotH;
-  function series(field, cls) {
-    const pts = rows.map((r, i) => [x(i), y(r[field])]);
-    return `<polyline class="line ${cls}" points="${pts.map(p => p.join(',')).join(' ')}"></polyline>` +
-      pts.map((p, i) => `<circle class="dot ${cls}" cx="${p[0]}" cy="${p[1]}" r="4"></circle>
-        <text class="value-label" x="${p[0]}" y="${p[1] - 10}">${rows[i][field]}</text>`).join('');
-  }
-  const grid = [0, 0.5, 1].map(f => { const gy = padTop + plotH * f;
-    return `<line class="gridline" x1="${padX}" y1="${gy}" x2="${W - padX}" y2="${gy}"></line>`; }).join('');
-  const xl = rows.map((r, i) => `<text class="x-label" x="${x(i)}" y="${H - 6}">${fmtDate(r.week[0])}</text>`).join('');
-  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}">${grid}${series('leads', 'leads')}${series('forms', 'forms')}${xl}</svg>`;
+  if (!n) { el.innerHTML = ''; return; }
+  const W = el.clientWidth || 900;
+  const padL = 8, padR = 8, costTop = 22, costH = 130, gap = 34, cartsH = 100, axisH = 30;
+  const cartsTop = costTop + costH + gap, H = cartsTop + cartsH + axisH;
+  const slot = (W - padL - padR) / n;
+  const x = i => padL + slot * (i + 0.5);
+  const barW = Math.max(3, Math.min(28, slot * 0.62));
+  const maxCost = Math.max(1, ...rows.map(r => r.cost_rub));
+  const maxCarts = Math.max(1, ...rows.map(r => r.carts));
+  const yCost = v => costTop + costH - (v / maxCost) * costH;
+  const yCarts = v => cartsTop + cartsH - (v / maxCarts) * cartsH;
+  const dow = d => new Date(d + 'T00:00:00').getDay();
+  const step = Math.ceil(n / (W < 600 ? 7 : 16));
+  const showVals = slot >= 22;
+  const parts = [];
+  // границы недель (понедельники)
+  rows.forEach((r, i) => { if (i && dow(r.date) === 1) {
+    const vx = padL + slot * i;
+    parts.push(`<line class="week-sep" x1="${vx}" y1="${costTop - 12}" x2="${vx}" y2="${cartsTop + cartsH}"></line>`); } });
+  parts.push(`<text class="panel-label" x="${padL}" y="${costTop - 10}">Расход, ₽ · макс. ${fmtRub(maxCost)}</text>`);
+  parts.push(`<text class="panel-label" x="${padL}" y="${cartsTop - 12}">Корзины · макс. ${maxCarts}</text>`);
+  parts.push(`<line class="gridline" x1="${padL}" y1="${costTop + costH}" x2="${W - padR}" y2="${costTop + costH}"></line>`);
+  parts.push(`<line class="gridline" x1="${padL}" y1="${cartsTop + cartsH}" x2="${W - padR}" y2="${cartsTop + cartsH}"></line>`);
+  rows.forEach((r, i) => {
+    const t = `${fmtDate(r.date)}: расход ${fmtRub(r.cost_rub)} ₽, ${r.clicks} ${plur(r.clicks, 'клик', 'клика', 'кликов')}, ${r.carts} ${plur(r.carts, 'корзина', 'корзины', 'корзин')}`;
+    parts.push(`<rect class="cost-bar" x="${x(i) - barW / 2}" y="${yCost(r.cost_rub)}" width="${barW}" height="${costTop + costH - yCost(r.cost_rub)}" rx="1.5"><title>${t}</title></rect>`);
+  });
+  const pts = rows.map((r, i) => [x(i), yCarts(r.carts)]);
+  parts.push(`<polygon class="carts-area" points="${x(0)},${cartsTop + cartsH} ${pts.map(p => p.join(',')).join(' ')} ${x(n - 1)},${cartsTop + cartsH}"></polygon>`);
+  parts.push(`<polyline class="line carts" points="${pts.map(p => p.join(',')).join(' ')}"></polyline>`);
+  pts.forEach((p, i) => {
+    parts.push(`<circle class="dot carts" cx="${p[0]}" cy="${p[1]}" r="3.5"><title>${fmtDate(rows[i].date)}: ${rows[i].carts} ${plur(rows[i].carts, 'корзина', 'корзины', 'корзин')}</title></circle>`);
+    if (showVals) parts.push(`<text class="value-label carts" x="${p[0]}" y="${p[1] - 9}">${rows[i].carts}</text>`);
+  });
+  rows.forEach((r, i) => { if (i % step === 0 || i === n - 1 && step === 1)
+    parts.push(`<text class="x-label" x="${x(i)}" y="${cartsTop + cartsH + 18}">${fmtDate(r.date)}</text>`); });
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="height:${H}px">${parts.join('')}</svg>`;
 }
 
-const COLS = 23;
-function manualCell(periodKey, field, label, cost) {
-  return `<td><input type="number" min="0" step="1" inputmode="numeric" class="manual-input${field === 'paid_revenue_rub' ? ' wide-input' : ''}" placeholder="—"
-         aria-label="${label}" data-period="${periodKey}" data-platform="Яндекс Директ" data-field="${field}"
-         data-cost="${cost || 0}"></td>`;
-}
+const COLS = 20;
 function row(c, cls, platformCell, periodKey) {
   return `<tr class="${cls}">
     <td class="left first" style="white-space:normal;">${platformCell}</td>
@@ -670,8 +619,6 @@ function row(c, cls, platformCell, periodKey) {
     <td>${fmtInt(c.telegram)}</td>
     <td>${fmtInt(c.instagram)}</td>
     <td>${fmtInt(c.calls)}</td>
-    ${periodKey ? manualCell(periodKey, 'paid_orders', 'Оплачено, шт', c.cost_rub) + manualCell(periodKey, 'paid_revenue_rub', 'Оплачено, ₽', c.cost_rub) +
-      '<td class="manual-cost" data-for="paid_orders"><span class="na">—</span></td>' : '<td></td><td></td><td></td>'}
   </tr>`;
 }
 
@@ -711,9 +658,6 @@ function renderPeriodTable(p, badgeHtml, title, periodKey, open) {
     <th>Telegram</th>
     <th>Instagram</th>
     <th>Телефон</th>
-    <th class="manual">Оплачено,<br>шт</th>
-    <th class="manual">Оплачено,<br>₽</th>
-    <th class="manual">Стоимость<br>оплач. заказа (₽)</th>
   </tr></thead><tbody>`);
   // Только Яндекс Директ: строки «Вне кабинета» и «Весь сайт» в дашборд не выводим
   const pl = p.platforms.find(x => x.name === 'Яндекс Директ');
@@ -734,8 +678,7 @@ function render() {
   const first = weeks[0].week[0];
   document.getElementById('since').textContent = `${fmtDate(first)} ${first.slice(0, 4)}`;
   renderSummary(weeks);
-  renderChart(weeks);
-  renderLeadsChart(weeks);
+  renderChart();
   document.getElementById('weeks').innerHTML = weeks.slice().reverse().map((w, i) =>
     renderPeriodTable(w, '<span class="week-badge">Неделя</span>', `${fmtDate(w.week[0])} — ${fmtDate(w.week[1])} ${w.week[1].slice(0, 4)}`, w.week[0], i === 0)).join('');
   const monthTable = (m, open) => {
@@ -766,155 +709,10 @@ function render() {
     const box = document.getElementById(b.parentElement.dataset.for);
     box.querySelectorAll('details').forEach(d => { d.open = b.dataset.open === '1'; });
   }));
-  initManualInputs();
-}
-
-// Оплаченные заказы (paid_orders, paid_revenue_rub) вписывает заказчик — Метрика оплату не видит. Значения лежат на сервере, поэтому их
-// видят все, кто открыл ссылку; localStorage — только зеркало и очередь недосланного.
-const API = 'https://sterling.company/api/saint-vandal-dashboard';
-const API_TOKEN = 'sv-2026-paid-entry';
-const CACHE_KEY = 'sv-manual-cache';
-const PENDING_KEY = 'sv-manual-pending';
-
-function readLS(k) { try { return JSON.parse(localStorage.getItem(k) || '{}'); } catch (e) { return {}; } }
-function writeLS(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
-
-async function postValue(payload) {
-  const r = await fetch(`${API}/values`, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json', 'X-Token': API_TOKEN},
-    body: JSON.stringify(payload),
-  });
-  if (!r.ok) throw new Error('HTTP ' + r.status);
-}
-
-async function flushPending() {
-  const pend = readLS(PENDING_KEY);
-  for (const k of Object.keys(pend)) {
-    try { await postValue(pend[k]); delete pend[k]; } catch (e) { break; }
-  }
-  writeLS(PENDING_KEY, pend);
-}
-
-function setSync(state, text) {
-  const el = document.getElementById('sync');
-  el.className = 'sync-pill ' + state;
-  el.innerHTML = '<span class="dot"></span>' + text;
-}
-
-function paintRow(inp) {
-  if (inp.dataset.field !== 'paid_orders') return;
-  const cost = parseFloat(inp.dataset.cost) || 0;
-  const out = inp.closest('tr').querySelector('.manual-cost');
-  const n = parseInt(inp.value, 10);
-  out.innerHTML = (n > 0 && cost > 0) ? fmtRub(cost / n) : '<span class="na">—</span>';
-}
-
-// Итог оплат в шапке — по тем же неделям, что и остальные карточки
-function paintDealsTotal(map) {
-  let n = 0, rub = 0, cost = 0;
-  (DATA.weeks || []).forEach(w => {
-    const rec = map[`${w.week[0]}::Яндекс Директ`];
-    if (rec && (rec.paid_orders || rec.paid_revenue_rub)) {
-      n += rec.paid_orders || 0; rub += rec.paid_revenue_rub || 0; cost += direct(w).cost_rub || 0;
-    }
-  });
-  document.getElementById('paidTotal').innerHTML = (n || rub)
-    ? `${fmtRub(rub)} ₽<span class="sub">/ ${n} шт</span>` : '—';
-  document.getElementById('paidSub').textContent = (n || rub)
-    ? `ДРР по оплатам ${rub ? fmtDec(cost / rub * 100, 1) + '%' : '—'} · по неделям, где оплаты вписаны`
-    : 'вписывается вручную в таблицах ниже';
-}
-
-function applyValues(map) {
-  document.querySelectorAll('.manual-input').forEach(inp => {
-    const rec = map[`${inp.dataset.period}::${inp.dataset.platform}`];
-    const v = rec ? rec[inp.dataset.field] : null;
-    const server = (v === null || v === undefined) ? '' : String(v);
-    // Не трогаем поле, которое сейчас правят, и поле с несохранённой правкой
-    if (document.activeElement !== inp && inp.value === inp.dataset.saved) {
-      inp.value = server;
-      inp.dataset.saved = server;
-    }
-    paintRow(inp);
-  });
-  paintDealsTotal(map);
-}
-
-async function loadValues() {
-  applyValues(readLS(CACHE_KEY));
-  try {
-    await flushPending();
-    const r = await fetch(`${API}/values`, {cache: 'no-store'});
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const map = await r.json();
-    writeLS(CACHE_KEY, map);
-    applyValues(map);
-    setSync('online', 'Оплаты общие для всех');
-  } catch (e) {
-    setSync('offline', 'Сервер недоступен — видно только вам');
-  }
-}
-
-async function saveValue(inp) {
-  // Шлём только реальную правку: иначе клик в пустую клетку стёр бы чужую цифру
-  if (inp.value === inp.dataset.saved) return;
-  const {period, platform, field} = inp.dataset;
-  const raw = inp.value.trim();
-  const payload = {period, platform, [field]: raw === '' ? null : parseInt(raw, 10)};
-  const key = `${period}::${platform}`;
-  const cache = readLS(CACHE_KEY);
-  cache[key] = Object.assign({}, cache[key], {[field]: payload[field]});
-  writeLS(CACHE_KEY, cache);
-  paintDealsTotal(cache);
-  // Сначала — в очередь недосланного: даже если вкладку закроют посреди отправки,
-  // правка уйдёт на сервер при следующем открытии. Из очереди убираем только после «ок».
-  const pend0 = readLS(PENDING_KEY);
-  pend0[`${key}::${field}`] = payload;
-  writeLS(PENDING_KEY, pend0);
-
-  inp.className = 'manual-input saving';
-  try {
-    await postValue(payload);
-    const pend = readLS(PENDING_KEY);
-    const k = `${key}::${field}`;
-    // убрать из очереди, только если там всё ещё наше значение, а не более свежая правка
-    if (pend[k] && pend[k][field] === payload[field]) { delete pend[k]; writeLS(PENDING_KEY, pend); }
-    inp.dataset.saved = inp.value;
-    inp.className = 'manual-input saved';
-    setSync('online', 'Оплаты общие для всех');
-    setTimeout(() => { inp.className = 'manual-input'; }, 1200);
-  } catch (e) {
-    inp.className = 'manual-input failed';
-    setSync('offline', 'Сервер не ответил — отправлю, как только вернётся');
-  }
-}
-
-function initManualInputs() {
-  document.querySelectorAll('.manual-input').forEach(inp => {
-    let timer = null;
-    inp.dataset.saved = inp.value;
-    inp.addEventListener('input', () => {
-      paintRow(inp);
-      clearTimeout(timer);
-      timer = setTimeout(() => saveValue(inp), 600);
-    });
-    inp.addEventListener('blur', () => { clearTimeout(timer); saveValue(inp); });
-  });
-  loadValues();
-  // Синхронизация между всеми, у кого открыта ссылка: опрос раз в 15 с, сразу —
-  // при возврате на вкладку и при появлении сети (заодно досылается очередь недосланного)
-  setInterval(loadValues, 15000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) loadValues(); });
-  window.addEventListener('online', loadValues);
-  // Уход со страницы посреди набора: отправить правку сразу, не дожидаясь паузы
-  window.addEventListener('pagehide', () => {
-    document.querySelectorAll('.manual-input').forEach(inp => { if (inp.value !== inp.dataset.saved) saveValue(inp); });
-  });
 }
 
 render();
-window.addEventListener('resize', () => renderLeadsChart(DATA.weeks || []));
+window.addEventListener('resize', renderChart);
 </script>
 </body>
 </html>
