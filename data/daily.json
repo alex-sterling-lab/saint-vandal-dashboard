@@ -100,5 +100,11 @@
   "cost_rub": 2526.39,
   "clicks": 173,
   "carts": 3
+ },
+ {
+  "date": "2026-10-01",
+  "cost_rub": 1729.11,
+  "clicks": 105,
+  "carts": 13
  }
 ]
