@@ -398,5 +398,21 @@
   "instagram": 0,
   "calls": 0,
   "date": "2026-10-08"
+ },
+ {
+  "impressions": 12190,
+  "clicks": 124,
+  "cost_rub": 995.75,
+  "sessions": 129,
+  "bounce_x_sessions": 31.0,
+  "depth_x_sessions": 298.0,
+  "duration_x_sessions": 10746.0,
+  "carts": 0,
+  "orders": 0,
+  "orders_revenue_rub": 0.0,
+  "telegram": 0,
+  "instagram": 0,
+  "calls": 0,
+  "date": "2026-10-09"
  }
 ]
