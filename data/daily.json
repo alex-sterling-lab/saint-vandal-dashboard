@@ -851,10 +851,10 @@
   "impressions": 25601,
   "clicks": 418,
   "cost_rub": 5562.67,
-  "sessions": 406,
+  "sessions": 405,
   "bounce_x_sessions": 106.0,
-  "depth_x_sessions": 916.0,
-  "duration_x_sessions": 28115.0,
+  "depth_x_sessions": 915.0,
+  "duration_x_sessions": 28065.0,
   "carts": 7,
   "orders": 1,
   "orders_revenue_rub": 11000.0,
@@ -894,5 +894,21 @@
   "instagram": 1,
   "calls": 0,
   "date": "2026-11-08"
+ },
+ {
+  "impressions": 19773,
+  "clicks": 259,
+  "cost_rub": 3105.14,
+  "sessions": 244,
+  "bounce_x_sessions": 67.0,
+  "depth_x_sessions": 662.0,
+  "duration_x_sessions": 22791.0,
+  "carts": 12,
+  "orders": 1,
+  "orders_revenue_rub": 7000.0,
+  "telegram": 3,
+  "instagram": 1,
+  "calls": 0,
+  "date": "2026-11-09"
  }
 ]
