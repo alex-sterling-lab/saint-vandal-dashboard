@@ -71,8 +71,8 @@
           "impressions": 43679,
           "clicks": 639,
           "ctr_pct": 1.4629455802559583,
-          "cost_rub": 2400.0,
-          "cpc_rub": 3.76,
+          "cost_rub": 4800.0,
+          "cpc_rub": 7.51,
           "sessions": 642,
           "users": 589,
           "bounce_rate": 0.246105919,
@@ -85,7 +85,7 @@
           "calls": 1,
           "messenger": 8,
           "orders_revenue_rub": 0.0,
-          "cost_per_cart_rub": 240.0,
+          "cost_per_cart_rub": 480.0,
           "cost_per_order_rub": null,
           "drr_pct": null,
           "roas": null
@@ -174,7 +174,7 @@
         "type": "TOTAL",
         "impressions": 141993,
         "clicks": 2399,
-        "cost_rub": 21724.01,
+        "cost_rub": 24124.01,
         "sessions": 2334,
         "users": 2120,
         "carts": 40,
@@ -188,11 +188,11 @@
         "pages_per_session": 2.422879177292202,
         "avg_session_duration": 82.8971722345073,
         "ctr_pct": 1.6895199059108548,
-        "cpc_rub": 9.06,
-        "cost_per_cart_rub": 543.1,
-        "cost_per_order_rub": 4344.8,
-        "drr_pct": 49.37,
-        "roas": 2.03
+        "cpc_rub": 10.06,
+        "cost_per_cart_rub": 603.1,
+        "cost_per_order_rub": 4824.8,
+        "drr_pct": 54.83,
+        "roas": 1.82
       }
     }
   ],
