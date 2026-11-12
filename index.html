@@ -134,6 +134,8 @@
   .line-chart .week-sep { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 4; opacity: .5; }
   .line-chart .panel-label { font-family: 'Golos Text', sans-serif; font-size: 11px; fill: var(--muted); letter-spacing: .04em; }
   .line-chart .line.carts { stroke: var(--green); }
+  .line-chart .line.cost { stroke: var(--accent); }
+  .line-chart .dot.cost { fill: var(--accent); }
   .line-chart .dot.carts { fill: var(--green); }
   .line-chart .value-label.carts { fill: var(--ink-2); font-size: 10px; }
   .line-chart .value-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--ink-2); text-anchor: middle; }
@@ -466,10 +468,11 @@
 
 <section class="block">
   <h2>Динамика по <em>дням</em></h2>
-  <div class="section-sub">Расход Директа и корзины из рекламы по дням; пунктир — начало недели</div>
+  <div class="section-sub" id="chartSub">Расход Директа и покупки (цель «Автосбор: покупка») по дням; пунктир — начало недели</div>
 
   <div class="chart-card">
-    <div class="chart-title">Расход и корзины по дням</div>
+    <div class="range-bar" id="chartMode" style="margin:0 0 14px"><button type="button" data-mode="day" class="on">По дням</button><button type="button" data-mode="week">По неделям</button></div>
+    <div class="chart-title">Расход и покупки</div>
     <div class="line-chart" id="chart"></div>
   </div>
 </section>
@@ -580,47 +583,70 @@ function renderSummary(days) {
   `;
 }
 
+let chartMode = 'day';
+function chartBuckets(rows) {
+  if (chartMode === 'day') return rows.map(r => ({ from: r.date, to: r.date, days: 1, cost_rub: r.cost_rub, clicks: r.clicks, orders: r.orders }));
+  const map = new Map();
+  rows.forEach(r => {
+    const d = new Date(r.date + 'T00:00:00'); d.setDate(d.getDate() - (d.getDay() + 6) % 7);
+    const k = d.toLocaleDateString('sv-SE');
+    const g = map.get(k) || { from: r.date, to: r.date, days: 0, cost_rub: 0, clicks: 0, orders: 0 };
+    g.to = r.date; g.days++; g.cost_rub += r.cost_rub; g.clicks += r.clicks; g.orders += r.orders;
+    map.set(k, g);
+  });
+  return [...map.values()];
+}
 function renderChart(rows) {
-  // Два ряда на общей оси дней: сверху расход (столбики), снизу корзины (линия) — у каждого своя шкала
+  // Два ряда на общей оси: сверху расход, снизу покупки («Автосбор: покупка») — обе линией, у каждого своя шкала
   const el = document.getElementById('chart');
-  const n = rows.length;
+  const bk = chartBuckets(rows);
+  const n = bk.length;
   if (!n) { el.innerHTML = ''; return; }
   const W = el.clientWidth || 900;
-  const padL = 8, padR = 8, costTop = 22, costH = 130, gap = 34, cartsH = 100, axisH = 30;
-  const cartsTop = costTop + costH + gap, H = cartsTop + cartsH + axisH;
+  const padL = 8, padR = 8, costTop = 22, costH = 130, gap = 34, ordH = 100, axisH = 30;
+  const ordTop = costTop + costH + gap, H = ordTop + ordH + axisH;
   const slot = (W - padL - padR) / n;
   const x = i => padL + slot * (i + 0.5);
-  const barW = Math.max(3, Math.min(28, slot * 0.62));
-  const maxCost = Math.max(1, ...rows.map(r => r.cost_rub));
-  const maxCarts = Math.max(1, ...rows.map(r => r.carts));
+  const maxCost = Math.max(1, ...bk.map(r => r.cost_rub));
+  const maxOrd = Math.max(1, ...bk.map(r => r.orders));
   const yCost = v => costTop + costH - (v / maxCost) * costH;
-  const yCarts = v => cartsTop + cartsH - (v / maxCarts) * cartsH;
+  const yOrd = v => ordTop + ordH - (v / maxOrd) * ordH;
   const dow = d => new Date(d + 'T00:00:00').getDay();
   const step = Math.ceil(n / (W < 600 ? 7 : 16));
   const showVals = slot >= 22;
+  const week = chartMode === 'week';
+  const lbl = b => week ? fmtDate(b.from) : fmtDate(b.from);
+  const tip = b => `${week ? fmtDate(b.from) + ' — ' + fmtDate(b.to) + (b.days < 7 ? ' (неполная неделя, ' + b.days + ' ' + plur(b.days, 'день', 'дня', 'дней') + ')' : '') : fmtDate(b.from)}: расход ${fmtRub(b.cost_rub)} ₽, ${b.clicks} ${plur(b.clicks, 'клик', 'клика', 'кликов')}, ${b.orders} ${plur(b.orders, 'покупка', 'покупки', 'покупок')}`;
   const parts = [];
-  // границы недель (понедельники)
-  rows.forEach((r, i) => { if (i && dow(r.date) === 1) {
+  if (!week) bk.forEach((r, i) => { if (i && dow(r.from) === 1) {
     const vx = padL + slot * i;
-    parts.push(`<line class="week-sep" x1="${vx}" y1="${costTop - 12}" x2="${vx}" y2="${cartsTop + cartsH}"></line>`); } });
+    parts.push(`<line class="week-sep" x1="${vx}" y1="${costTop - 12}" x2="${vx}" y2="${ordTop + ordH}"></line>`); } });
   parts.push(`<text class="panel-label" x="${padL}" y="${costTop - 10}">Расход, ₽ · макс. ${fmtRub(maxCost)}</text>`);
-  parts.push(`<text class="panel-label" x="${padL}" y="${cartsTop - 12}">Корзины · макс. ${maxCarts}</text>`);
+  parts.push(`<text class="panel-label" x="${padL}" y="${ordTop - 12}">Покупки (Автосбор) · макс. ${maxOrd}</text>`);
   parts.push(`<line class="gridline" x1="${padL}" y1="${costTop + costH}" x2="${W - padR}" y2="${costTop + costH}"></line>`);
-  parts.push(`<line class="gridline" x1="${padL}" y1="${cartsTop + cartsH}" x2="${W - padR}" y2="${cartsTop + cartsH}"></line>`);
-  rows.forEach((r, i) => {
-    const t = `${fmtDate(r.date)}: расход ${fmtRub(r.cost_rub)} ₽, ${r.clicks} ${plur(r.clicks, 'клик', 'клика', 'кликов')}, ${r.carts} ${plur(r.carts, 'корзина', 'корзины', 'корзин')}`;
-    parts.push(`<rect class="cost-bar" x="${x(i) - barW / 2}" y="${yCost(r.cost_rub)}" width="${barW}" height="${costTop + costH - yCost(r.cost_rub)}" rx="1.5"><title>${t}</title></rect>`);
+  parts.push(`<line class="gridline" x1="${padL}" y1="${ordTop + ordH}" x2="${W - padR}" y2="${ordTop + ordH}"></line>`);
+  const cpts = bk.map((r, i) => [x(i), yCost(r.cost_rub)]);
+  parts.push(`<polyline class="line cost" points="${cpts.map(p => p.join(',')).join(' ')}"></polyline>`);
+  const opts = bk.map((r, i) => [x(i), yOrd(r.orders)]);
+  parts.push(`<polygon class="carts-area" points="${x(0)},${ordTop + ordH} ${opts.map(p => p.join(',')).join(' ')} ${x(n - 1)},${ordTop + ordH}"></polygon>`);
+  parts.push(`<polyline class="line carts" points="${opts.map(p => p.join(',')).join(' ')}"></polyline>`);
+  const dotR = n > 40 ? 2.5 : 3.5;
+  bk.forEach((b, i) => {
+    parts.push(`<circle class="dot cost" cx="${cpts[i][0]}" cy="${cpts[i][1]}" r="${dotR}"><title>${tip(b)}</title></circle>`);
+    parts.push(`<circle class="dot carts" cx="${opts[i][0]}" cy="${opts[i][1]}" r="${dotR}"><title>${tip(b)}</title></circle>`);
+    if (showVals) parts.push(`<text class="value-label carts" x="${opts[i][0]}" y="${opts[i][1] - 9}">${b.orders}</text>`);
   });
-  const pts = rows.map((r, i) => [x(i), yCarts(r.carts)]);
-  parts.push(`<polygon class="carts-area" points="${x(0)},${cartsTop + cartsH} ${pts.map(p => p.join(',')).join(' ')} ${x(n - 1)},${cartsTop + cartsH}"></polygon>`);
-  parts.push(`<polyline class="line carts" points="${pts.map(p => p.join(',')).join(' ')}"></polyline>`);
-  pts.forEach((p, i) => {
-    parts.push(`<circle class="dot carts" cx="${p[0]}" cy="${p[1]}" r="3.5"><title>${fmtDate(rows[i].date)}: ${rows[i].carts} ${plur(rows[i].carts, 'корзина', 'корзины', 'корзин')}</title></circle>`);
-    if (showVals) parts.push(`<text class="value-label carts" x="${p[0]}" y="${p[1] - 9}">${rows[i].carts}</text>`);
-  });
-  rows.forEach((r, i) => { if (i % step === 0 || i === n - 1 && step === 1)
-    parts.push(`<text class="x-label" x="${x(i)}" y="${cartsTop + cartsH + 18}">${fmtDate(r.date)}</text>`); });
+  bk.forEach((b, i) => { if (i % step === 0 || i === n - 1 && step === 1)
+    parts.push(`<text class="x-label" x="${x(i)}" y="${ordTop + ordH + 18}">${lbl(b)}</text>`); });
   el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="height:${H}px">${parts.join('')}</svg>`;
+}
+function setChartMode(m) {
+  chartMode = m;
+  document.querySelectorAll('#chartMode button').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+  document.getElementById('chartSub').textContent = m === 'week'
+    ? 'Расход Директа и покупки (цель «Автосбор: покупка») по неделям, Пн–Вс; последняя неделя может быть неполной'
+    : 'Расход Директа и покупки (цель «Автосбор: покупка») по дням; пунктир — начало недели';
+  renderChart(rangeDays);
 }
 
 const COLS = 20;
@@ -784,6 +810,7 @@ function initRange() {
   applyRange(first, last);
 }
 
+document.querySelectorAll('#chartMode button').forEach(b => b.addEventListener('click', () => setChartMode(b.dataset.mode)));
 render();
 window.addEventListener('resize', () => renderChart(rangeDays));
 </script>
