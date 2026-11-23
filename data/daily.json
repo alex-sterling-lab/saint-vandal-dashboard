@@ -1102,5 +1102,21 @@
   "instagram": 0,
   "calls": 0,
   "date": "2026-11-21"
+ },
+ {
+  "impressions": 9899,
+  "clicks": 134,
+  "cost_rub": 1912.36,
+  "sessions": 150,
+  "bounce_x_sessions": 35.0,
+  "depth_x_sessions": 496.0,
+  "duration_x_sessions": 21714.0,
+  "carts": 4,
+  "orders": 0,
+  "orders_revenue_rub": 0.0,
+  "telegram": 1,
+  "instagram": 0,
+  "calls": 1,
+  "date": "2026-11-22"
  }
 ]
